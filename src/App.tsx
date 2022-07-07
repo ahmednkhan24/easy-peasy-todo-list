@@ -3,19 +3,18 @@ import { useStoreState, useStoreActions } from './store/hooks';
 
 const App: React.FC = () => {
   const { name, age } = useStoreState((stores) => stores.personStore);
-  const { setName, setAge } = useStoreActions((stores) => stores.personStore);
+  const { updateDataThunk } = useStoreActions((stores) => stores.personStore);
   const [inputName, setInputName] = useState('');
   const [inputAge, setInputAge] = useState<number>();
 
-  const onNameSubmit = () => {
-    setName(inputName);
-    setInputName('');
-  };
+  const onSubmit = () => {
+    if (inputName && (inputAge || inputAge === 0)) {
+      // update store
+      updateDataThunk({ name: inputName, age: inputAge });
 
-  const onAgeSubmit = () => {
-    if (inputAge || inputAge === 0) {
-      setAge(inputAge);
+      // update local state
       setInputAge(undefined);
+      setInputName('');
     }
   };
 
@@ -26,12 +25,7 @@ const App: React.FC = () => {
         placeholder="Update the name"
         value={inputName}
         onChange={(e) => setInputName(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') onNameSubmit();
-        }}
       />
-      <button onClick={onNameSubmit}>Submit</button>
-
       <h1>age: {age}</h1>
       <input
         placeholder="Update the age"
@@ -46,11 +40,11 @@ const App: React.FC = () => {
             }
           }
         }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') onAgeSubmit();
-        }}
       />
-      <button onClick={onAgeSubmit}>Submit</button>
+      <br />
+      <br />
+      <br />
+      <button onClick={onSubmit}>Submit</button>
     </div>
   );
 };
